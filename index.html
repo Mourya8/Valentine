@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be My Valentine?</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #ff758c, #ff7eb3);
+            font-family: Arial, sans-serif;
+            text-align: center;
+            overflow: hidden;
+            margin: 0;
+        }
+        h1 {
+            font-size: 2.5em;
+            color: #fff;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 2s ease-in-out;
+            margin-bottom: 20px;
+        }
+        .buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 20px;
+            position: relative;
+        }
+        button {
+            font-size: 18px;
+            padding: 12px 24px;
+            cursor: pointer;
+            border: none;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        #yes {
+            background-color: lightgreen;
+            animation: pulse 1.5s infinite;
+        }
+        #no {
+            background-color: lightcoral;
+        }
+        #yes:hover {
+            background-color: #32cd32;
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        #message {
+            font-size: 2em;
+            color: #fff;
+            margin-top: 20px;
+            animation: fadeIn 2s ease-in-out;
+        }
+        .hidden {
+            display: none;
+        }
+        dialog {
+            border: none;
+            border-radius: 15px;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        dialog::backdrop {
+            background: rgba(0, 0, 0, 0.3);
+        }
+        .dialog-buttons {
+            margin-top: 1rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        .dialog-buttons button {
+            padding: 8px 20px;
+            font-size: 1rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <h1>Will you be my Valentine? ❤️</h1>
+    <div class="buttons">
+        <button id="yes">Yes</button>
+        <button id="no">No</button>
+    </div>
+    <h2 id="message" class="hidden">You made my day! 😊</h2>
+    
+    <dialog id="confirmationDialog">
+        <p>Are you sure about this? 😢</p>
+        <div class="dialog-buttons">
+            <button id="confirmNo">Yes, I'm sure</button>
+            <button id="cancelNo">Take me back!</button>
+        </div>
+    </dialog>
+
+    <script>
+        // Yes button functionality
+        document.getElementById("yes").addEventListener("click", function() {
+            document.getElementById("message").classList.remove("hidden");
+            document.querySelector(".buttons").style.display = "none";
+        });
+
+        // No button functionality
+        const noButton = document.getElementById("no");
+        const confirmationDialog = document.getElementById("confirmationDialog");
+        let moveEnabled = false;
+
+        noButton.addEventListener("click", function(event) {
+            if (!moveEnabled) {
+                event.preventDefault();
+                confirmationDialog.showModal();
+            }
+        });
+
+        // Dialog button handlers
+        document.getElementById("confirmNo").addEventListener("click", function() {
+            confirmationDialog.close();
+            moveEnabled = true;
+            noButton.textContent = "No";
+        });
+
+        document.getElementById("cancelNo").addEventListener("click", function() {
+            confirmationDialog.close();
+            moveEnabled = true;
+        });
+
+        // Move functionality
+        noButton.addEventListener("mouseover", function() {
+            if (!moveEnabled) {
+                event.preventDefault();
+                confirmationDialog.showModal();
+            }
+            if (moveEnabled) {
+                const buttonWidth = noButton.offsetWidth;
+                const buttonHeight = noButton.offsetHeight;
+                const maxX = window.innerWidth - buttonWidth - 20;
+                const maxY = window.innerHeight - buttonHeight - 20;
+                
+                noButton.style.position = "fixed";
+                noButton.style.left = `${Math.random() * maxX}px`;
+                noButton.style.top = `${Math.random() * maxY}px`;
+            }
+        });
+
+        // Reset position on window resize
+        window.addEventListener("resize", function() {
+            if (moveEnabled) {
+                noButton.style.position = "static";
+                setTimeout(() => {
+                    noButton.style.position = "";
+                }, 10);
+            }
+        });
+    </script>
+</body>
+</html>
